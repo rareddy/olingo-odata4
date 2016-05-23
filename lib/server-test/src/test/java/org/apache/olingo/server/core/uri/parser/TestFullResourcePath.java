@@ -5850,12 +5850,6 @@ public class TestFullResourcePath {
     testUri.runEx("ESAllPrim(PropertyInt16=@p1)", "@p1='ewe'").isExSemantic(MessageKeys.UNKNOWN_PART);
     testUri.runEx("ESAllPrim(PropertyInt16=@p1)", "@p1='ewe")
         .isExSyntax(UriParserSyntaxException.MessageKeys.SYNTAX);
-    testFilter.runOnETKeyNavEx("PropertyInt16 gt @alias")
-        .isInAliasToValueMap("@alias", null);
-    testFilter.runOnETKeyNavEx("PropertyInt16 gt @alias&@alias=@alias")
-      .isInAliasToValueMap("@alias", "@alias");
-    testFilter.runOnETKeyNavEx("@alias&@alias=@alias2&@alias2=true or @alias")
-      .isInAliasToValueMap("@alias", "@alias2");
   }
 
   @Test
