@@ -18,6 +18,8 @@
  */
 package org.apache.olingo.commons.api.edm;
 
+import java.lang.reflect.Parameter;
+
 import org.apache.olingo.commons.api.edm.annotation.EdmAnd;
 import org.apache.olingo.commons.api.edm.annotation.EdmApply;
 import org.apache.olingo.commons.api.edm.annotation.EdmCast;
@@ -63,6 +65,7 @@ public enum TargetType {
   OnDelete(EdmOnDelete.class),
   Property(EdmProperty.class),
   PropertyValue(EdmPropertyValue.class),
+  Parameter(EdmParameter.class),
   Record(EdmRecord.class),
   ReferentialConstraint(EdmReferentialConstraint.class),
   ReturnType(EdmReturnType.class),
