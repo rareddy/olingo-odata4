@@ -51,8 +51,8 @@ public class UriDecoder {
       //OLINGO-846 We trim the query option text to be more lenient to wrong uri constructors
       final String text = pos >= 0 ? option.substring(pos + 1).trim() : "";
       queryOptions.add(new CustomQueryOptionImpl()
-          .setName(decode(name))
-          .setText(decode(text)));
+          .setName(decode(name).trim())
+          .setText(decode(text).trim()));
     }
     return queryOptions;
   }

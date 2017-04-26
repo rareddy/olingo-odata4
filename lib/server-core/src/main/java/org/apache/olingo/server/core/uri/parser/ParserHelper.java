@@ -162,18 +162,22 @@ public class ParserHelper {
     List<UriParameter> parameters = new ArrayList<UriParameter>();
     Set<String> parameterNames = new HashSet<String>();
     ParserHelper.requireNext(tokenizer, TokenKind.OPEN);
+    ParserHelper.bws(tokenizer);
     if (tokenizer.next(TokenKind.CLOSE)) {
       return parameters;
     }
     do {
+      ParserHelper.bws(tokenizer);
       ParserHelper.requireNext(tokenizer, TokenKind.ODataIdentifier);
       final String name = tokenizer.getText();
+      ParserHelper.bws(tokenizer);
       if (parameterNames.contains(name)) {
         throw new UriParserSemanticException("Duplicated function parameter " + name,
             UriParserSemanticException.MessageKeys.INVALID_KEY_VALUE, name);
       }
       parameterNames.add(name);
       ParserHelper.requireNext(tokenizer, TokenKind.EQ);
+      ParserHelper.bws(tokenizer);
       if (tokenizer.next(TokenKind.COMMA) || tokenizer.next(TokenKind.CLOSE) || tokenizer.next(TokenKind.EOF)) {
         throw new UriParserSyntaxException("Parameter value expected.", UriParserSyntaxException.MessageKeys.SYNTAX);
       }
@@ -204,10 +208,15 @@ public class ParserHelper {
       }
       parameters.add(parameter);
     } while (tokenizer.next(TokenKind.COMMA));
+    ParserHelper.bws(tokenizer);
     ParserHelper.requireNext(tokenizer, TokenKind.CLOSE);
     return parameters;
   }
 
+  protected static boolean bws(UriTokenizer tokenizer) {
+        return tokenizer.nextWhitespace();
+  }
+  
   protected static void validateFunctionParameters(final EdmFunction function, final List<UriParameter> parameters,
       final Edm edm, final EdmType referringType, final Map<String, AliasQueryOption> aliases)
       throws UriParserException, UriValidationException {

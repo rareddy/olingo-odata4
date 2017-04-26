@@ -248,12 +248,15 @@ public class ExpressionParser {
     // The TokenKind 'IsOfMethod' consumes also the opening parenthesis.
     // The first parameter could be an expression or a type literal.
     List<Expression> parameters = new ArrayList<Expression>();
+    ParserHelper.bws(tokenizer);
     parameters.add(parseExpression());
     if (!(parameters.get(0) instanceof TypeLiteral)) {
       // The first parameter is not a type literal, so there must be a second parameter.
+      ParserHelper.bws(tokenizer);
       ParserHelper.requireNext(tokenizer, TokenKind.COMMA);
+      ParserHelper.bws(tokenizer);
       parameters.add(parseExpression());
-
+      ParserHelper.bws(tokenizer);
       // The second parameter must be a type literal.
       if (!(parameters.get(1) instanceof TypeLiteral)) {
         throw new UriParserSemanticException("Type literal expected.",
@@ -328,7 +331,9 @@ public class ExpressionParser {
 
   private Expression parseExprValue() throws UriParserException, UriValidationException {
     if (tokenizer.next(TokenKind.OPEN)) {
+      ParserHelper.bws(tokenizer);
       final Expression expression = parseExpression();
+      ParserHelper.bws(tokenizer);
       ParserHelper.requireNext(tokenizer, TokenKind.CLOSE);
       return expression;
     }
@@ -434,6 +439,7 @@ public class ExpressionParser {
     case NOW:
     case MAXDATETIME:
     case MINDATETIME:
+      ParserHelper.bws(tokenizer);
       break;
 
     // Must have one parameter.
@@ -441,14 +447,18 @@ public class ExpressionParser {
     case TOLOWER:
     case TOUPPER:
     case TRIM:
+      ParserHelper.bws(tokenizer);
       final Expression stringParameter = parseExpression();
+      ParserHelper.bws(tokenizer);
       checkType(stringParameter, EdmPrimitiveTypeKind.String);
       parameters.add(stringParameter);
       break;
     case YEAR:
     case MONTH:
     case DAY:
+      ParserHelper.bws(tokenizer);
       final Expression dateParameter = parseExpression();
+      ParserHelper.bws(tokenizer);
       checkType(dateParameter, EdmPrimitiveTypeKind.Date, EdmPrimitiveTypeKind.DateTimeOffset);
       parameters.add(dateParameter);
       break;
@@ -456,32 +466,42 @@ public class ExpressionParser {
     case MINUTE:
     case SECOND:
     case FRACTIONALSECONDS:
+      ParserHelper.bws(tokenizer);
       final Expression timeParameter = parseExpression();
+      ParserHelper.bws(tokenizer);
       checkType(timeParameter, EdmPrimitiveTypeKind.TimeOfDay, EdmPrimitiveTypeKind.DateTimeOffset);
       parameters.add(timeParameter);
       break;
     case DATE:
     case TIME:
     case TOTALOFFSETMINUTES:
+      ParserHelper.bws(tokenizer);
       final Expression dateTimeParameter = parseExpression();
+      ParserHelper.bws(tokenizer);
       checkType(dateTimeParameter, EdmPrimitiveTypeKind.DateTimeOffset);
       parameters.add(dateTimeParameter);
       break;
     case TOTALSECONDS:
+      ParserHelper.bws(tokenizer);
       final Expression durationParameter = parseExpression();
+      ParserHelper.bws(tokenizer);
       checkType(durationParameter, EdmPrimitiveTypeKind.Duration);
       parameters.add(durationParameter);
       break;
     case ROUND:
     case FLOOR:
     case CEILING:
+      ParserHelper.bws(tokenizer);
       final Expression decimalParameter = parseExpression();
+      ParserHelper.bws(tokenizer);
       checkType(decimalParameter,
           EdmPrimitiveTypeKind.Decimal, EdmPrimitiveTypeKind.Single, EdmPrimitiveTypeKind.Double);
       parameters.add(decimalParameter);
       break;
     case GEOLENGTH:
+      ParserHelper.bws(tokenizer);
       final Expression geoParameter = parseExpression();
+      ParserHelper.bws(tokenizer);
       checkType(geoParameter,
           EdmPrimitiveTypeKind.GeographyLineString, EdmPrimitiveTypeKind.GeometryLineString);
       parameters.add(geoParameter);
@@ -493,30 +513,42 @@ public class ExpressionParser {
     case STARTSWITH:
     case INDEXOF:
     case CONCAT:
+      ParserHelper.bws(tokenizer);
       final Expression stringParameter1 = parseExpression();
       checkType(stringParameter1, EdmPrimitiveTypeKind.String);
       parameters.add(stringParameter1);
+      ParserHelper.bws(tokenizer);
       ParserHelper.requireNext(tokenizer, TokenKind.COMMA);
+      ParserHelper.bws(tokenizer);
       final Expression stringParameter2 = parseExpression();
+      ParserHelper.bws(tokenizer);
       checkType(stringParameter2, EdmPrimitiveTypeKind.String);
       parameters.add(stringParameter2);
       break;
     case GEODISTANCE:
+      ParserHelper.bws(tokenizer);
       final Expression geoParameter1 = parseExpression();
       checkType(geoParameter1, EdmPrimitiveTypeKind.GeographyPoint, EdmPrimitiveTypeKind.GeometryPoint);
       parameters.add(geoParameter1);
+      ParserHelper.bws(tokenizer);
       ParserHelper.requireNext(tokenizer, TokenKind.COMMA);
+      ParserHelper.bws(tokenizer);
       final Expression geoParameter2 = parseExpression();
+      ParserHelper.bws(tokenizer);
       checkType(geoParameter2, EdmPrimitiveTypeKind.GeographyPoint, EdmPrimitiveTypeKind.GeometryPoint);
       parameters.add(geoParameter2);
       break;
     case GEOINTERSECTS:
+      ParserHelper.bws(tokenizer);
       final Expression geoPointParameter = parseExpression();
       checkType(geoPointParameter,
           EdmPrimitiveTypeKind.GeographyPoint, EdmPrimitiveTypeKind.GeometryPoint);
       parameters.add(geoPointParameter);
+      ParserHelper.bws(tokenizer);
       ParserHelper.requireNext(tokenizer, TokenKind.COMMA);
+      ParserHelper.bws(tokenizer);
       final Expression geoPolygonParameter = parseExpression();
+      ParserHelper.bws(tokenizer);
       checkType(geoPolygonParameter,
           EdmPrimitiveTypeKind.GeographyPolygon, EdmPrimitiveTypeKind.GeometryPolygon);
       parameters.add(geoPolygonParameter);
@@ -524,15 +556,22 @@ public class ExpressionParser {
 
     // Can have two or three parameters.
     case SUBSTRING:
+      ParserHelper.bws(tokenizer);
       final Expression parameterFirst = parseExpression();
       checkType(parameterFirst, EdmPrimitiveTypeKind.String);
       parameters.add(parameterFirst);
+      ParserHelper.bws(tokenizer);
       ParserHelper.requireNext(tokenizer, TokenKind.COMMA);
+      ParserHelper.bws(tokenizer);
       final Expression parameterSecond = parseExpression();
+      ParserHelper.bws(tokenizer);
       checkIntegerType(parameterSecond);
       parameters.add(parameterSecond);
+      ParserHelper.bws(tokenizer);
       if (tokenizer.next(TokenKind.COMMA)) {
+        ParserHelper.bws(tokenizer);
         final Expression parameterThird = parseExpression();
+        ParserHelper.bws(tokenizer);
         checkIntegerType(parameterThird);
         parameters.add(parameterThird);
       }
