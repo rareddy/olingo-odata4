@@ -63,6 +63,8 @@ public class EdmDecimalTest extends PrimitiveTypeBaseTest {
     assertEquals("-0.125", instance.valueToString(-0.125f, null, null, null, 3, null));
     assertEquals("-1234567890.1234567890", instance.valueToString(new BigDecimal(
         "-1234567890.1234567890"), null, null, null, 10, null));
+	assertEquals(new BigDecimal("31991163"),
+			instance.valueOfString("3.1991163E7", null, null, 8, 7, null, BigDecimal.class));
 
     assertEquals("-32768", instance.valueToString(-32768, null, null, 42, null, null));
     assertEquals("-32768", instance.valueToString(-32768, null, null, 5, null, null));
@@ -107,7 +109,6 @@ public class EdmDecimalTest extends PrimitiveTypeBaseTest {
     expectFacetsErrorInValueOfString(instance, "0.00390625", null, null, 5, null, null);
     expectFacetsErrorInValueOfString(instance, "0.00390625", null, null, null, 7, null);
 
-    expectContentErrorInValueOfString(instance, "-1E2");
     expectContentErrorInValueOfString(instance, "1.");
     expectContentErrorInValueOfString(instance, ".1");
     expectContentErrorInValueOfString(instance, "1.0.1");
